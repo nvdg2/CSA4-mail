@@ -7,9 +7,10 @@ services:
     volumes:
       - step:/home/step
     environment:
-      - DOCKER_STEPCA_INIT_NAME=Smallstep
-      - DOCKER_STEPCA_INIT_DNS_NAMES=localhost
-      - DOCKER_STEPCA_INIT_REMOTE_MANAGEMENT=true
+      - DOCKER_STEPCA_INIT_NAME=${CA_NAME}
+      - DOCKER_STEPCA_INIT_DNS_NAMES=${ALLOWED_INCOMING_NAMES}
+      - DOCKER_STEPCA_INIT_PASSWORD=${CA_PASSWORD}
+      - DOCKER_STEPCA_INIT_REMOTE_MANAGEMENT=${ALLOW_REMOTE_MANAGEMENT}
 volumes:
   step:
     
