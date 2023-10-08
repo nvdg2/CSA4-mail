@@ -1,0 +1,16 @@
+version: "3.2"
+services:
+  step-ca:
+    image: smallstep/step-ca:latest
+    ports:
+      - 9000:9000
+    volumes:
+      - step:/home/step
+    environment:
+      - DOCKER_STEPCA_INIT_NAME=Smallstep
+      - DOCKER_STEPCA_INIT_DNS_NAMES=localhost
+      - DOCKER_STEPCA_INIT_REMOTE_MANAGEMENT=true
+volumes:
+  step:
+    
+        
