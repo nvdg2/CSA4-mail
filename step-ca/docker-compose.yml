@@ -5,13 +5,11 @@ services:
     ports:
       - 9000:9000
     volumes:
-      - step:/home/step
+      - ./ca-data:/home/step
     environment:
       - DOCKER_STEPCA_INIT_NAME=${CA_NAME}
       - DOCKER_STEPCA_INIT_DNS_NAMES=${ALLOWED_INCOMING_NAMES}
       - DOCKER_STEPCA_INIT_PASSWORD=${CA_PASSWORD}
       - DOCKER_STEPCA_INIT_REMOTE_MANAGEMENT=${ALLOW_REMOTE_MANAGEMENT}
-volumes:
-  step:
-    
-        
+      - DOCKER_STEPCA_INIT_ACME=true
+      
