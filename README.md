@@ -29,6 +29,23 @@ Install-Module -Name DockerMsftProvider -Repository PSGallery -Force
 
 Install-Package -Name docker -ProviderName DockerMsftProvider
 
+
+### Dockerfile aanmaken:
+
+FROM mcr.microsoft.com/windows/servercore/iis
+
+RUN powershell -NoProfile -Command Remove-Item -Recurse C:\inetpub\wwwroot\*
+
+WORKDIR /inetpub/wwwroot
+
+COPY content/ .
+
+
+docker build -t iis-site .
+docker run -d -p 8000:80 --name my-running-site iis-site
+
+# Optioneel
+
 ### Docker compose installeren:
 
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
@@ -36,13 +53,3 @@ Install-Package -Name docker -ProviderName DockerMsftProvider
 cd C:\Program Files\Docker>
 
 Invoke-WebRequest "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-Windows-x86_64.exe" -UseBasicParsing -OutFile docker-compose.exe
-
-### Container pullen en draaien a.d.v docker compose:
-
-Gebruik de compose file van deze repo. Plaats hem in de volgende directory:
-
-C:\Users\<username>\AppData\Roaming\Docker
-
-**Draaien met:**
-
-.\docker-compose.exe up -d
