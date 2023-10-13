@@ -1,0 +1,11 @@
+version: "3.2"
+name: step-cli
+services:
+  step-ca:
+    container_name: cli
+    image: smallstep/step-cli
+    ports:
+      - 80:80
+    network_mode: host
+    command: ["sleep", "infinity"]
+    
