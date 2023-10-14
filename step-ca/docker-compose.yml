@@ -2,6 +2,7 @@ version: "3.2"
 name: pki
 services:
   ca.pki.project:
+    user: 1000:1000
     container_name: ca.pki.project
     image: smallstep/step-ca:0.25.0
     ports:
@@ -17,22 +18,21 @@ services:
   certs.pki.project:
     depends_on:
       - ca.pki.project
-    container_name: certs.pki.projects
+    container_name: certs.pki.project
     image: nginx
     volumes:
     - ./step-ca-data/certs:/usr/share/nginx/data/:ro
-    - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    - ./nginx/setup_nginx.sh:/etc/setup_nginx.sh
     ports:
     - "8080:8080"
     environment:
     - NGINX_PORT=80
     # THIS NEEDS TO BE CHANGED. THIS IS NOT A PROPER WAY TO DO IT. BUT I AM INCAPABLE !
-    command: >
-      sh -c "cp /usr/share/nginx/data/* /media/. &&
-             chown -R www-data:www-data /media/ &&
-             chmod 755 /media/* &&
-             nginx
-             sleep infinity"
+    command: > 
+      sh -c "chmod u+x /etc/setup_nginx.sh
+            /etc/setup_nginx.sh"
+
 
   dns.pki.projects:
     depends_on:
@@ -46,10 +46,15 @@ services:
       - 8081:8081
       - 8443:8443
     environment:
-      - DNS_SERVER_DOMAIN=pki.project
+      - DNS_SERVER_DOMAIN=${DOMAIN}
       - DNS_SERVER_WEB_SERVICE_HTTP_PORT=8081
       - DNS_SERVER_WEB_SERVICE_HTTPS_PORT=8443
       - DNS_SERVER_FORWARDERS=1.1.1.1
       - DNS_SERVER_WEB_SERVICE_ENABLE_HTTPS=true
-      - FINGERPRINT_OF_ROOT_CERT=
     restart: unless-stopped
+    volumes:
+      - dns-data:/etc/dns
+      - ./dns/setup_dns.sh:/media/setup_dns.sh
+      
+volumes:
+  dns-data:
