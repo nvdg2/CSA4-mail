@@ -1,3 +1,5 @@
+# MAYBE THIS CAN BE USED FOR THE CLIENT COMPOSE FILES
+
 version: "3.2"
 name: step-cli
 services:
