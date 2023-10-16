@@ -44,9 +44,13 @@ The following actions will happen:
 >[!warning] Again, keep the password of the dns server somewhere safe. This script doesn't work when the default admin pass is not present. You cannot run this a second time to "reset" your pass !
 >![](images/DNS_password.png)
 
-## Completing the DNS
+### Finalize the DNS server
 
-TBD
+You have to add the default zone (`$PKI_DOMAIN_NAME`) manually because we think this is a task that should be performed by the administrator of the PKI.
+
+## Prepare clients
+
+Before you can requests certificates, you first need to make the CA's domain name known to your host. This can be done by using the DNS server (if this server contains a record of the CA.) Otherwise you can add the IP of the CA manually in your `/etc/hosts`.
 
 ## Installing certificates
 
