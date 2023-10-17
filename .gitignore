@@ -1,2 +1,8 @@
 .vscode
 .DS_Store
+pass
+webserver/
+.env
+step-ca-data
+.obsidian/
+```

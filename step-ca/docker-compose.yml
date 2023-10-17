@@ -1,0 +1,43 @@
+version: "3.2"
+
+name: pki
+
+services:
+  ca:
+    user: 1000:1000 # Specify the user for the container
+    container_name: ca.${PKI_DOMAIN_NAME} # Set the container name
+    image: smallstep/step-ca:0.25.0
+    ports:
+      - 9000:9000
+    environment:
+      - DOCKER_STEPCA_INIT_NAME=ca.${PKI_DOMAIN_NAME} # Set the Step CA initialization name
+      - DOCKER_STEPCA_INIT_DNS_NAMES=ca.${PKI_DOMAIN_NAME},${EXTRA_ALLOWED_INCOMING_NAMES} # Define DNS names for Step CA initialization
+      - DOCKER_STEPCA_INIT_REMOTE_MANAGEMENT=true # Enable remote management for Step CA
+      - DOCKER_STEPCA_INIT_ACME=true # Enable ACME for Step CA
+    restart: unless-stopped
+    volumes:
+      - step-ca-data:/home/step # Mount a volume for Step CA data
+
+  dns:
+    container_name: dns.${PKI_DOMAIN_NAME} # Set the container name
+    image: technitium/dns-server
+    ports:
+      - "53:53/udp" # Map UDP port 53 from the host to UDP port 53 in the container
+      - "53:53/tcp" # Map TCP port 53 from the host to TCP port 53 in the container
+      - "853:853/udp" # Map UDP port 853 from the host to UDP port 853 in the container
+      - "853:853/tcp" # Map TCP port 853 from the host to TCP port 853 in the container
+      - 8081:8081
+      - 8443:8443 
+    environment:
+      - DNS_SERVER_DOMAIN=${PKI_DOMAIN_NAME} # Set the DNS server domain
+      - DNS_SERVER_WEB_SERVICE_HTTP_PORT=8081 # Specify the HTTP port for the DNS server
+      - DNS_SERVER_WEB_SERVICE_HTTPS_PORT=8443 # Specify the HTTPS port for the DNS server
+      - PKI_DOMAIN_NAME=${PKI_DOMAIN_NAME} # Set the PKI domain name
+    restart: unless-stopped
+    volumes:
+      - dns-data:/etc/dns # Mount a volume for DNS server data
+      - ./dns/setup_dns.sh:/media/setup_dns.sh # Mount a script for setting up DNS
+
+volumes:
+  dns-data:
+  step-ca-data:

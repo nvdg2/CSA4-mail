@@ -1,0 +1,10 @@
+version: '2'
+services:
+  apache:
+    image: 'bitnami/apache:latest'
+    ports:
+      - '80:8080'
+      - '443:8443'
+    volumes:
+      - ./public-html:/app
+      # - /path/to/apache-certs:/certs # wanneer je een certificaat wil gebruiken
