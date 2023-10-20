@@ -1,35 +1,19 @@
 version: '3'
 
 services:
-  # step-ca:
-  #   image: smallstep/step-ca:0.25.0
-  #   container_name: step-ca
-  #   ports:
-  #     - 9000:9000
-  #   volumes:
-  #     - step:/home/step
-  #   environment:
-  #     - DOCKER_STEPCA_INIT_NAME=${CA_NAME}
-  #     - DOCKER_STEPCA_INIT_DNS_NAMES=${ALLOWED_INCOMING_NAMES}
-  #     - DOCKER_STEPCA_INIT_PASSWORD=${CA_PASSWORD}
-  #     - DOCKER_STEPCA_INIT_REMOTE_MANAGEMENT=${ALLOW_REMOTE_MANAGEMENT}
-  #     - DOCKER_STEPCA_INIT_ACME=true
-
   db:
     image: mysql:8.0
     container_name: db
     restart: unless-stopped
     env_file: .env
     environment:
-      - MYSQL_PASSWORD=$MYSQL_PASSWORD
-      - MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD
       - MYSQL_DATABASE=wordpress
-      - MYSQL_USER=MYSQL_USER
     volumes: 
       - dbdata:/var/lib/mysql
-    command: '--default-authentication-plugin=caching_sha2_password instead'
+    command: '--default-authentication-plugin=mysql_native_password'
     networks:
       - app-network
+
 
   wordpress:
     depends_on: 
@@ -48,6 +32,7 @@ services:
     networks:
       - app-network
 
+
   webserver:
     depends_on:
       - wordpress
@@ -56,31 +41,51 @@ services:
     restart: unless-stopped
     ports:
       - "80:80"
-      - "443:443"
+      - "443:433"
     volumes:
       - wordpress:/var/www/html
-      - ./nginx-conf:/etc/nginx/conf.d
+      - /nginx-conf/nginx-conf:/etc/nginx/conf.d
       - certbot-etc:/etc/letsencrypt
     networks:
       - app-network
 
-  certbot:
-    depends_on:
-      - webserver
-    image: certbot/certbot
-    container_name: certbot
+
+  step-cli:
+    container_name: cli
+    image: smallstep/step-cli
+    ports:
+      - "88:88"
     volumes:
       - certbot-etc:/etc/letsencrypt
+      - ./roots.pem:/home/step/roots.pem
       - wordpress:/var/www/html
-      - ./nginx-conf:/etc/nginx/conf.d
-    command: certonly --webroot --webroot-path=/var/www/html --email sammy@projectpki.be --agree-tos --no-eff-email -d wordpress.pki.project -d www.wordpress.pki.project
+    dns:
+      - 192.168.146.60
+    command: step ca certificate --root=/home/step/roots.pem --provisioner=acme --http-listen=88 --ca-url=https://ca.pki.project wordpress.pki.project /etc/letsencrypt/cert.pem /etc/letsencrypt/key.pem
+
 
 volumes:
   certbot-etc:
   wordpress:
   dbdata:
-  step:
 
 networks:
   app-network:
     driver: bridge
+
+
+
+
+  # certbot:
+  #   depends_on:
+  #     - webserver
+  #   image: certbot/certbot
+  #   container_name: certbot
+  #   # environment:
+  #     # - REQUEST_CA_BUNDLE=/
+  #   volumes:
+  #     - certbot-etc:/etc/letsencrypt
+  #     - wordpress:/var/www/html
+  #   dns:
+  #     - 192.168.146.60
+  #   command: certonly --webroot --webroot-path=/var/www/html --server https://ca.pki.project:9000/acme/acme/directory --email kelvin.bogaerts02@gmail.com --agree-tos --no-eff-email -d wordpress.pki.project -d www.wordpress.pki.project

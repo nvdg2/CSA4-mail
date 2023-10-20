@@ -1,4 +1,4 @@
-# Project 2: Private Key Infrastructure
+# gProject 2: Private Key Infrastructure
 
 ## Docker Compose
 
@@ -54,6 +54,8 @@ We ask you to do this manually because we think this is a task that should be pe
 ## Prepare clients
 
 Before you can requests certificates, you first need to make the CA's domain name known to your host. This can be done by using the DNS server (if this server contains a record of the CA.) Otherwise you can add the IP of the CA manually in your `/etc/hosts`.
+
+You can also make your machine point to your dns server (resolve.conf or nmtui,..) and then add an A record of the CA to your dns server.
 
 Keep in mind that you need to add "ca." before your (`$PKI_DOMAIN_NAME`) when adding it to your `/etc/hosts`, aswell as you need to specify 127.0.0.1 as the IP address.
 
