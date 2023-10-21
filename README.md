@@ -1,4 +1,4 @@
-# gProject 2: Private Key Infrastructure
+# Project 2: Private Key Infrastructure
 
 ## Docker Compose
 
@@ -23,7 +23,7 @@ Please create an `.env` file and fill in your desired values.
 The start our PKI environment, we first need to launch the docker compose file. This can be done with the following command: `docker compose up`. Execute this command in the folder where the `docker-compose.yml` is located.
 
 > [!warning] **You** are responsible for keeping all the secrets safely. At the first boot of your environment, the ca will show you the administrator pass.
-> ![](images/CA_password.png)
+![CA_Password](images/CA_password.png)
 
 When the environment is up and running, it is time to configure the DNS-server. Just run the following script with this command: `./configure_dns.sh`. Again, run this command in the folder where this script is located.
 
@@ -43,13 +43,13 @@ The following actions will happen:
 5. _The end_
 
 > [!warning] Again, keep the password of the dns server somewhere safe. This script doesn't work when the default admin pass is not present. You cannot run this a second time to "reset" your pass !
-> ![](images/DNS_password.png)
+![DNS_Password](images/DNS_password.png)
 
 ### Finalize the DNS server
 
-Now go into the dns interface on ``http://ip:8081``because you need to create a new zone inside the 'Zones' tab, the name of the zone should be the value of `$PKI_DOMAIN_NAME.`
+Now go into the dns interface on `https://ip:8443`because you need to create a new zone inside the 'Zones' tab, the name of the zone should be the value of `$PKI_DOMAIN_NAME.` 
 
-We ask you to do this manually because we think this is a task that should be performed by the administrator of the PKI.
+We ask you to do this manually because we think this is a task that should be performed by the administrator of the PKI. Furthermore you will need to create an A record for both dns and ca (it will resolve to dns.your_domain and ca.domain_name).
 
 ## Prepare clients
 
@@ -73,11 +73,11 @@ In both scripts the following actions will run:
 
 ## Requesting domains for the webservers
 
-Your dns will need an A record so it can find the webserver. Using the dns interface on ``http://ip:8081``u can go into the zone that you created earlier, here make an A record according to your webserver (webserver name + IP + TTL)
+Your DNS will need an A record so it can find the webserver. Using the dns interface on `https://ip:8443` you can go into the zone that you created earlier, here make an A record according to your webserver (webserver name + IP + TTL)
 
-something something
+### Wordpress
 
-You're going to need to generate the certificate but I AM NOT CAPABLE L
+You will first need to create an .env file inside the wordPress folder with variables noted in the env.sample file, after that you can run `docker compose up`
 
 ## Team Members
 
