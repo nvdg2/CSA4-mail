@@ -36,16 +36,19 @@ services:
   webserver:
     depends_on:
       - wordpress
-    image: nginx:1.15.12-alpine
+      - step-cli
+    image: nginx:1.25-alpine
     container_name: webserver
     restart: unless-stopped
     ports:
-      - "80:80"
-      - "443:433"
+      # - "80:80"
+      - "443:443"
+    environment:
+      - DOMAIN=${DOMAIN}
     volumes:
       - wordpress:/var/www/html
-      - /nginx-conf/nginx-conf:/etc/nginx/conf.d
-      - certbot-etc:/etc/letsencrypt
+      - certs:/certs
+      - ./templates:/etc/nginx/templates
     networks:
       - app-network
 
@@ -53,39 +56,25 @@ services:
   step-cli:
     container_name: cli
     image: smallstep/step-cli
+    user: root
     ports:
-      - "88:88"
+      - "80:80"
+    environment:
+      - PKI_DOMAIN_NAME=${PKI_DOMAIN_NAME}
+      - DOMAIN=${DOMAIN}
     volumes:
-      - certbot-etc:/etc/letsencrypt
-      - ./roots.pem:/home/step/roots.pem
-      - wordpress:/var/www/html
-    dns:
-      - 192.168.146.60
-    command: step ca certificate --root=/home/step/roots.pem --provisioner=acme --http-listen=88 --ca-url=https://ca.pki.project wordpress.pki.project /etc/letsencrypt/cert.pem /etc/letsencrypt/key.pem
+      - certs:/home/step
+      - ./request_certs.sh:/home/step/request_certs.sh
+    command: ./request_certs.sh
 
 
 volumes:
-  certbot-etc:
+  step-etc:
   wordpress:
   dbdata:
+  certs:
+
 
 networks:
   app-network:
     driver: bridge
-
-
-
-
-  # certbot:
-  #   depends_on:
-  #     - webserver
-  #   image: certbot/certbot
-  #   container_name: certbot
-  #   # environment:
-  #     # - REQUEST_CA_BUNDLE=/
-  #   volumes:
-  #     - certbot-etc:/etc/letsencrypt
-  #     - wordpress:/var/www/html
-  #   dns:
-  #     - 192.168.146.60
-  #   command: certonly --webroot --webroot-path=/var/www/html --server https://ca.pki.project:9000/acme/acme/directory --email kelvin.bogaerts02@gmail.com --agree-tos --no-eff-email -d wordpress.pki.project -d www.wordpress.pki.project
