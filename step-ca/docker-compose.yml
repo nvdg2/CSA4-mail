@@ -37,7 +37,9 @@ services:
     volumes:
       - dns-data:/etc/dns # Mount a volume for DNS server data
       - ./dns/setup_dns.sh:/media/setup_dns.sh # Mount a script for setting up DNS
+      - dns-certs:/opt/technitium/dns/certs
 
 volumes:
   dns-data:
   step-ca-data:
+  dns-certs:
