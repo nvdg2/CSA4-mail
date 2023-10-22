@@ -1,10 +1,32 @@
-version: '2'
+version: '3'
 services:
   apache:
+    depends_on:
+      - step-cli
+    restart: always
+    user: root
     image: 'bitnami/apache:latest'
     ports:
-      - '80:8080'
+      # - '80:8080'
       - '443:8443'
     volumes:
       - ./public-html:/app
-      # - /path/to/apache-certs:/certs # wanneer je een certificaat wil gebruiken
+      - certs:/certs # wanneer je een certificaat wil gebruiken
+      - ./apache.conf:/opt/bitnami/apache/conf/bitnami/bitnami.conf
+
+  step-cli:
+    container_name: cli
+    image: smallstep/step-cli
+    user: root
+    ports:
+      - "80:80"
+    environment:
+      - PKI_DOMAIN_NAME=${PKI_DOMAIN_NAME}
+      - DOMAIN=${DOMAIN}
+    volumes:
+      - certs:/home/step
+      - ./request_certs.sh:/home/step/request_certs.sh
+    command: ./request_certs.sh
+
+volumes:
+  certs:
