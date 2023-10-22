@@ -10,36 +10,32 @@ Link to Git repo: https://github.com/kelvin-ap/CSA-PKI/
 - Niels Van De Ginste
 - Tom Goedemé
 
+<div style="page-break-after: always; visibility: hidden">
+\pagebreak
+</div>
+
 ## 1. Threat model
 
 We have created the following threat model for a typical PKI setup with a root CA and an intermediate CA.
 
 ![](images/threat-model.png)
 
+<div style="page-break-after: always; visibility: hidden">
+\pagebreak
+</div>
+
 Below you can see both a DREAD and a STRIDE analysis of the threat model. It is noteworthy that D03, 'Weak key generation algorithms,' stands out with the highest average risk score of 8.2. Despite the high score, this problem can be easily mitigated by using safe key generation algorithms.
 
 ### 1.1. DREAD
 
-| ID  | Description                                     | Damage | Reproducibility | Exploitability | Affected users | Discoverability | Average |
-| --- | ----------------------------------------------- | ------ | --------------- | -------------- | -------------- | --------------- | ------- |
-| D01 | Root CA private key getting compromised         | 10     | 1               | 1              | 10             | 1               | 4.6     |
-| D02 | Intermediary CA private key getting compromised | 8      | 2               | 3              | 8              | 1               | 4.4     |
-| D03 | Weak key generation algorithms                  | 10     | 3               | 8              | 10             | 10              | 8.2     |
-| D04 | OCSP responder outage                           | 7      | 3               | 4              | 8              | 5               | 5.4     |
-| D05 | Registration authority getting compromised      | 8      | 3               | 3              | 8              | 3               | 5       |
-| D06 | Root CRL outage                                 | 9      | 3               | 4              | 10             | 3               | 5.8     |
-| D07 | Intermediary CRL outage                         | 8      | 3               | 3              | 8              | 4               | 5.2     |
-| D08 | Registration authority outage                   | 5      | 7               | 4              | 3              | 4               | 4.6     |
-| D09 | Certificate expiry                              | 10     | 1               | 1              | 10             | 1               | 4.6     |
-
+![](./images/DREAD.png)
 ### 1.2. STRIDE
 
-| ID  | Description                   | Threat Type                          |
-| --- | ----------------------------- | ------------------------------------ |
-| S01 | Fake ownership of domain name | Spoofing                             |
-| S02 | Key recovery attack           | Information disclosure               |
-| S03 | Key escrow attack             | Repudiation / Information disclosure |
-| S04 | Certificate revocation bypass | Tampering                            |
+![](./images/STRIDE.png)
+
+<div style="page-break-after: always; visibility: hidden">
+\pagebreak
+</div>
 
 ## 2. Overview
 
@@ -58,6 +54,10 @@ In our design, we used 2 hosts for running all the Docker containers. One host r
 | OCSP | Online Certificate Status Protocol |
 | CRL  | Certificate Revocation List        |
 
+<div style="page-break-after: always; visibility: hidden">
+\pagebreak
+</div>
+
 ## 3. Step CA & Technitium DNS
 
 The Docker compose file in the `step-ca` directory consist of two components: the Certificate Authority (`smallstep/step-ca:0.25.0`) and the DNS Server (`technitium/dns-server:11.4.1`). Both containers use a Docker volume to store their data.
@@ -74,6 +74,10 @@ Below a brief description of both the environment variables
 
 >Do not change any environment variable in de Docker compose file. If you do, the automation scripts might not work correctly.
 
+<div style="page-break-after: always; visibility: hidden">
+\pagebreak
+</div>
+
 ### 3.2. Running the compose file
 
 To start our PKI environment, we first need to launch the Docker compose file: `docker compose up`. Execute this command in the folder where the `docker-compose.yml` is located.
@@ -82,7 +86,7 @@ To start our PKI environment, we first need to launch the Docker compose file: `
 
 ![](images/CA_password.png)
 
-When the environment is up and running, it is time to configure the DNS server. Just run the `configure_dns` script with this command: `./initial_configure_dns.sh`. Again, run this command in the folder where the script is located.
+When the environment is up and running, it is time to configure the DNS server. Just run the `start_pki` script with this command: `./start_pki.sh`. Again, run this command in the folder where the script is located.
 
 The following actions will happen:
 
@@ -103,9 +107,12 @@ The following actions will happen:
 
 ![](images/DNS_password.png)
 
+<div style="page-break-after: always; visibility: hidden">
+\pagebreak
+</div>
+
 ### 3.3. Configure the DNS server
 
-The DNS server should be running at 
 You have to add the default zone (`$PKI_DOMAIN_NAME`) manually, after that you can add the desired records in the settings.
 
 ## 4. Prepare clients
@@ -122,9 +129,11 @@ To install the certificate of the Certificate Authority, you can run `./install_
 
 >You can uninstall the cert with the following commando: `step certificate uninstall ./root_ca.crt`
 
+This command is recommended to run on the hosts that need to trust the certificate of your CA.
+
 ## 6. Requesting certificates for the webservers
 
-Assuming you have set up the CA and DNS servers correctly, you can requests certificates via Step-cli for a webserver. Below we describe the process for Apache, Nginx and IIS.
+Assuming you have set up the CA and DNS servers correctly, you can requests certificates automatically via Step-cli for a webserver. Below we describe the process for Apache, Nginx and IIS.
 
 ### 6.1. Apache
 
@@ -193,3 +202,53 @@ There's countless of good tutorials on how to set this up. But overall, the proc
 - Go to Sites in the left pane -> Your site name. Then select bindings in the right pane. You should be able to add the certificate to a hostname. Select https, as IP address select All Unassigned and as port 443. Make sure to select the SSL certificate as well.
 
 - When done, restart the website using the button under Manage Website.
+
+<div style="page-break-after: always; visibility: hidden">
+\pagebreak
+</div>
+
+## 7. SSL Certificate Scanner
+
+The SSL Certificate Scanner is a Python script that allows you to scan SSL/TLS certificates of remote hosts and store the certificate information, including the certificate itself in Base64 format, into a CSV file. This script is useful for auditing and monitoring SSL certificates on various hosts.
+
+### 7.1. Requirements
+
+- Python 3.x
+- `ssl`, `base64`, `csv`, `socket` (Python standard libraries)
+
+### 7.2. Usage
+
+1. Make sure you have Python 3.x installed on your system.
+
+2. Create a CSV file (`hosts.csv`) with the list of hosts and ports you want to scan. The CSV file should have two columns: `host` and `port`.
+
+Example `hosts.csv`:
+```
+host,port
+example.com,443
+another-example.com,8443
+```
+3. Execute the script by running the following command:
+```shell
+python3 ssl_certificate_scanner.py
+```
+
+
+4. The script will scan the SSL/TLS certificates for the hosts listed in `hosts.csv` and store the certificate information in a new CSV file named `certificates.csv`. The certificate itself will be stored in Base64 format.
+
+<div style="page-break-after: always; visibility: hidden">
+\pagebreak
+</div>
+
+### 7.3. Output
+
+The output CSV file (`certificates.csv`) will contain the following columns:
+
+- `Subject DN`: The Distinguished Name (DN) of the certificate's subject.
+- `Issuer DN`: The Distinguished Name (DN) of the certificate's issuer.
+- `Serial Number`: The serial number of the certificate.
+- `Not Before`: The date and time when the certificate becomes valid.
+- `Not After`: The date and time when the certificate expires.
+- `Certificate PEM in BASE64`: The certificate itself in Base64 format.
+
+---
