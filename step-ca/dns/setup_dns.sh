@@ -1,17 +1,17 @@
 #!/bin/bash
 
+
 # Check if 'wget' and 'curl' are available; if not, install them.
-if ! command -v wget &> /dev/null || ! command -v curl &> /dev/null
+if [ ! -e "/opt/technitium/dns/certs/cert.pfx" ];
 then
     apt update
-    apt install wget curl -y
+    apt install curl -y
 
     # Download and install step-cli
-    wget https://dl.smallstep.com/gh-release/cli/gh-release-header/v0.25.0/step-cli_0.25.0_amd64.deb
-    dpkg -i step-cli_0.25.0_amd64.deb
+    curl -L https://dl.smallstep.com/gh-release/cli/gh-release-header/v0.25.0/step-cli_0.25.0_amd64.deb > step-cli.deb
+    dpkg -i step-cli.deb
 
     # Create a 'certs' directory and navigate to it
-    mkdir certs
     cd certs
 
     # Download the root CA certificate
@@ -24,7 +24,7 @@ then
     # Generate a random 25-character password
     random_password=$(openssl rand -base64 25)
 
-    # REquest token for other API calls
+    # Request token for other API calls
     json=$(curl "http://localhost:8081/api/user/login?user=admin&pass=admin&includeInfo=true")
     token_value=$(echo $json | grep -o '"token":"[^"]*"' | awk -F '"' '{print $4}')
     

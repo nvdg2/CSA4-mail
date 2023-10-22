@@ -5,4 +5,5 @@ webserver/
 .env
 step-ca-data
 .obsidian/
-```
+*.pem
+*.crt
