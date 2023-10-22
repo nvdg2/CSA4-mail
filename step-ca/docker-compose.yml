@@ -1,4 +1,4 @@
-version: "3.2"
+version: "3.8"
 
 name: pki
 
@@ -20,7 +20,7 @@ services:
 
   dns:
     container_name: dns.${PKI_DOMAIN_NAME} # Set the container name
-    image: technitium/dns-server
+    image: technitium/dns-server:11.4.1
     ports:
       - "53:53/udp" # Map UDP port 53 from the host to UDP port 53 in the container
       - "53:53/tcp" # Map TCP port 53 from the host to TCP port 53 in the container
