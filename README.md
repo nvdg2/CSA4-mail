@@ -78,7 +78,7 @@ Below a brief description of both the environment variables
 
 To start our PKI environment, we first need to launch the Docker compose file: `docker compose up`. Execute this command in the folder where the `docker-compose.yml` is located.
 
->**You** are responsible for keeping all the secrets safely. At the first boot of your environment, the ca will show you the administrator pass.
+>**You** are responsible for keeping all the secrets safely. At the first boot of your environment, the ca will print the password to the log output. You can view it using `docker compose logs`.
 
 ![](images/CA_password.png)
 
