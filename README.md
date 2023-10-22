@@ -149,4 +149,4 @@ Copy `env.sample` to `.env` and change the variables according to your needs. `P
 
 ### 6.3. IIS
 
-IIS is a little trickier, please see the [instructions in the `IIS` folder](./IIS/README.md) for an installation guide.
+IIS is a little trickier, please see the [instructions in the `IIS` folder](./IIS/README.md) for an installation guide. Note that we did not get IIS to work with our SSL certificates in Docker containers, only with the manual installation.
