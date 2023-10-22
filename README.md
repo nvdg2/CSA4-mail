@@ -151,4 +151,45 @@ Copy `env.sample` to `.env` and change the variables according to your needs. `P
 
 ### 6.3. IIS
 
-IIS is a little trickier, please see the [instructions in the `IIS` folder](./IIS/README.md) for an installation guide. Note that we did not get IIS to work with our SSL certificates in Docker containers, only with the manual installation.
+IIS is a little trickier, please see the [instructions in the `IIS` folder](./IIS/README.md) for an installation guide. You can also find the instructions for a manual installation below. Note that we did not get IIS to work with our SSL certificates in Docker containers, only with the manual installation.
+
+In your Windows environment, go to server manager. Click on manage at the upper right corner of the window. Select add roles and features. Select the current server from the pool and check the server role called Web Server (IIS). This should install IIS on the system. A reboot may be required, and it's not a bad idea to do so either.
+
+The next step is to test if the web page is reachable. If you can see the test page, you can start setting up SSL.
+
+The first thing you want to do is set the hostfile of your windows system. You can do so by manually adding the necessary editing the hosts file or you can adjust the set_hostsfile script to use the IP and domain that you want, then run it. Make sure to do this, as the other steps will not work if you don't.
+
+You should also set the DNS settings of your windows server to the address of the DNS server that's running on your other machine in a container.
+
+Now, you need to set up the root certificate in the windows server in order to 'trust' the CA. You can do this manually, or using a script I made that you can also find next to this readme file. It's called install-rootcert. Note that using this script will require a .env file, which needs to be located in the same directory as the script itself.
+
+The variable needed in this file is `PKI_DOMAIN_NAME`. Which is in our case `ca.$PKI_DOMAIN_NAME`. Run the script, and wait for it to complete.
+
+Create a signed certificate using the step commands. You can do so by using step cli, which you can install as a frontend to communicate with the step ca system/container. I created the certificate on the CA server itself, for testing purposes. 
+
+**Example command here:**
+
+`step certificate create example.com example.com.crt example.com.key --profile leaf --not-after=8760h --ca ./intermediate_ca.crt --ca-key ./intermediate_ca.key --bundle`
+
+If done correctly, you should now have two created files: a crt and a key. In order for IIS to work, you need a pfx certificate. This can be created easily using openssl for example.
+
+**IMPORTANT:** all the certificates used in the chain need to be used using this openssl command. If one of them isn't included, IIS wil throw errors and warnings at you.
+
+**With OpenSSL installed, use this command:**
+
+`openssl pkcs12 -export -out combined.pfx -inkey your.key -in your.crt -certfile intermediate.crt` 
+^ Depending on the key you used to make the crt. Could be root, or intermediate.
+
+This should now merge the files into one, called combined.pfx for example. This certificate can now be used to setup SSL in the IIS manager.
+
+There's countless of good tutorials on how to set this up. But overall, the process goes as followed:
+
+- Open IIS manager by typing it in windows search.
+
+- Click on your hostname on the left pane, then select 'Server Certificates'.
+
+- In the right pane, click on import. Select the pfx file that you created earlier and fill in the password box. Certificate store should be Web Hosting, but personal will also work.
+
+- Go to Sites in the left pane -> Your site name. Then select bindings in the right pane. You should be able to add the certificate to a hostname. Select https, as IP address select All Unassigned and as port 443. Make sure to select the SSL certificate as well.
+
+- When done, restart the website using the button under Manage Website.
