@@ -24,7 +24,7 @@ then
     # Generate a random 25-character password
     random_password=$(openssl rand -base64 25)
 
-    # REquest token for other API calls
+    # Request token for other API calls
     json=$(curl "http://localhost:8081/api/user/login?user=admin&pass=admin&includeInfo=true")
     token_value=$(echo $json | grep -o '"token":"[^"]*"' | awk -F '"' '{print $4}')
     
