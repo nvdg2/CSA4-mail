@@ -7,3 +7,4 @@ step-ca-data
 .obsidian/
 *.pem
 *.crt
+defaults.json
