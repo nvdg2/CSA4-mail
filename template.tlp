@@ -1,0 +1,1 @@
+{"subject": {{ toJson .Subject }},"sans": {{ toJson .SANs }},"keyUsage": ["contentCommitment","digitalSignature","keyEncipherment"],"extKeyUsage": ["emailProtection"]}

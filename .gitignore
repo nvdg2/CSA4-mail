@@ -8,3 +8,4 @@ step-ca-data
 *.pem
 *.crt
 defaults.json
+/certs
