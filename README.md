@@ -1,7 +1,8 @@
 # Project 4: Mail certificates on MacOS
 
 Link to Git repo: https://github.com/nvdg2/CSA4-mail
-Link to previous pki project: https://github.com/kelvin-ap/CSA-PKI
+Link to previous PKI project: https://github.com/kelvin-ap/CSA-ja
+
 
 ## Team Members
 
@@ -23,13 +24,14 @@ This type of certificates will be given by a second JWT provisioner. This provis
 
 ## Compatibility matrix with MacOS Mail
 
-| Client      | Encryption | Signing |
-| ----------- |:----------:|:-------:|
-| MacOs       |   check    |  check  |
-| Evolution   |   check    |  check  |
-| Outlook     |  skipped   |  check  |
-| Gmail       |    paid    |  check  |
-| Thunderbird |    fail    |  check  |
+| Client    | Encryption | Signing |
+| --------- |:----------:|:-------:|
+| MacOs     |   check    |  check  |
+| Evolution |   check    |  check  |
+| Outlook   | skipped(!) |  check  |
+| Gmail     |    paid    |  check  |
+
+! Since the group using Outlook has its own mail server, we were unable to exchange emails directly with each other. As a result, we could only test whether the emails were correctly signed or not.
 
 ## 1. Deploying
 
@@ -138,6 +140,7 @@ A signed icon (containing a tick) is shown in the message header and indicates y
 
 ![Signed mail header](images/mail/signed-mail.png)
 ![](images/mail/signed-mail-zoomed-in.png)
+
 ### Encrypting a mail
 
 Address the message to recipients were from you have a public certificate, by receiving a signed mail for all recipients.
