@@ -154,3 +154,22 @@ An encrypted icon (containing a closed lock) is shown if your keychain contains 
 Sources:
 
 - Mail user guide for mac. Apple Support. (n.d.). https://support.apple.com/en-gb/guide/mail/
+
+
+## Threat model
+
+Below you can find three pictures:
+- The architecture that describes the flow of the mail components in this project
+- The DREAD table which lists some potential vulnerabilities
+- The STRIDE table that lists the attacks that can be performed based on the DREAD table
+
+### Architecture
+
+![](images/mail/threat_architecture.png)
+
+### DREAD table
+
+![](images/mail/threat_DREAD.png)
+### STRIDE table
+
+![](images/mail/threat_STRIDE.png)
