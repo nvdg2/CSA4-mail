@@ -149,12 +149,6 @@ An encrypted icon (containing a closed lock) is shown if your keychain contains 
 
 ![Encrypted mail header](images/mail/encrypted-mail.png)
 ![](images/mail/encrypted-mail-zoomed.png)
-## Notes
-
-Sources:
-
-- Mail user guide for mac. Apple Support. (n.d.). https://support.apple.com/en-gb/guide/mail/
-
 
 ## Threat model
 
@@ -162,6 +156,18 @@ Below you can find three pictures:
 - The architecture that describes the flow of the mail components in this project
 - The DREAD table which lists some potential vulnerabilities
 - The STRIDE table that lists the attacks that can be performed based on the DREAD table
+
+## Key store in MacOS
+
+Fortunately MacOS has already built-in keys storage available. This means that all the private keys that are used, are kept safely by default. Below you can find two pictures: one where the user needs to type in his password and a picture where you can see the stored private keys.
+
+### User pass
+
+[photo here]
+
+### Key storage
+
+[photo here]
 
 ### Architecture
 
@@ -173,3 +179,9 @@ Below you can find three pictures:
 ### STRIDE table
 
 ![](images/mail/threat_STRIDE.png)
+
+## Notes
+
+Sources:
+
+- Mail user guide for mac. Apple Support. (n.d.). https://support.apple.com/en-gb/guide/mail/
