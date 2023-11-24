@@ -159,15 +159,10 @@ Below you can find three pictures:
 
 ## Key store in MacOS
 
-Fortunately MacOS has already built-in keys storage available. This means that all the private keys that are used, are kept safely by default. Below you can find two pictures: one where the user needs to type in his password and a picture where you can see the stored private keys.
+Fortunately MacOS has already built-in keys storage available. This means that all the private keys that are used, are kept safely by default. Below you can find the picture of the key of the mail certificate. The user doesn't need te give a password, but the keys can only be seen when the user is logged in and the user can only see his keys. (The administrator can see the system keys)
 
-### User pass
 
-[photo here]
-
-### Key storage
-
-[photo here]
+![](images/mail/keyStore.png)
 
 ### Architecture
 
