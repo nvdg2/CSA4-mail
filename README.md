@@ -172,7 +172,6 @@ Fortunately MacOS has already built-in keys storage available. This means that a
 ### Architecture
 
 ![](images/mail/threat_architecture.png)
-
 ### DREAD table
 
 ![](images/mail/threat_DREAD.png)
