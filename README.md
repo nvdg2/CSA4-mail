@@ -1,8 +1,7 @@
 # Project 4: Mail certificates on MacOS
 
 Link to Git repo: https://github.com/nvdg2/CSA4-mail
-Link to previous PKI project: https://github.com/kelvin-ap/CSA-ja
-
+Link to previous PKI project: https://github.com/kelvin-ap/CSA-PKI
 
 ## Team Members
 
@@ -99,7 +98,7 @@ After downloading this file we double click it (using a admin account of the Mac
 
 ![Root-CA](images/mail/root-ca.png)
 
-In the next step, we will allow the use of S/MIME for this certificate by double clicking the certificate in the list and set the Secure Mail flag (Beveiligder e-mail) to Always Trust (Vertrouw altijd)
+In the next step, we will allow the use of S/MIME for this certificate by double clicking the certificate in the list and set the Secure Mail flag (Beveiligde e-mail) to Always Trust (Vertrouw altijd)
 
 ![Root-CA Trust levels](images/mail/root-ca-trust.png)
 
@@ -107,9 +106,10 @@ In the next step, we will allow the use of S/MIME for this certificate by double
 
 In the Keychain Access app on your Mac, choose Keychain Access > Certificate Assistant > Request a Certificate From a Certificate Authority.
 
-![Open Certificate Assistant](images/mail/create-csr-1.png)
+![](images/mail/create-csr-1.png)
 
-Enter your email address, name, and save to disk, then save this file and sign it using the steps explained in [Signing a Certificate Signing Request](<#Signing a Certificate Signing Request>)
+Enter your email address, name, and save to disk, then save this file and sign it using the steps explained in section "Signing a Certificate Signing Request".
+
 Afterwards transfer the signed public key to the MacOS Mail computer.
 
 ![CSR details input](images/mail/create-csr-2.png)
@@ -143,7 +143,7 @@ A signed icon (containing a tick) is shown in the message header and indicates y
 
 ### Encrypting a mail
 
-Address the message to recipients were from you have a public certificate, by receiving a signed mail for all recipients.
+Address the message to a recipient(s) of whom you have previously received a signed email, meaning you have their public certificate.
 
 An encrypted icon (containing a closed lock) is shown if your keychain contains a personal certificate for every recipient. If you don’t have a certificate for every recipient, click the encrypted icon in your message; an open lock replaces the closed lock, indicating the message will be sent unencrypted.
 
@@ -164,15 +164,31 @@ Fortunately MacOS has already built-in keys storage available. This means that a
 
 ![](images/mail/keyStore.png)
 
+
+<div style="page-break-after: always; visibility: hidden">
+\pagebreak
+</div>
+
 ### Architecture
 
 ![](images/mail/threat_architecture.png)
-### DREAD table
 
-![](images/mail/threat_DREAD.png)
+<div style="page-break-after: always; visibility: hidden">
+\pagebreak
+</div>
+
 ### STRIDE table
 
 ![](images/mail/threat_STRIDE.png)
+
+### DREAD table
+
+![](images/mail/threat_DREAD.png)
+
+
+<div style="page-break-after: always; visibility: hidden">
+\pagebreak
+</div>
 
 ## Notes
 
